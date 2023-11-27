@@ -39,7 +39,7 @@ services:
       # - ESTUARY_API=http://estuary-main:3004
       - ESTUARY_API=${ESTUARY_HOSTNAME:-http://estuary-main:3004}
     ports:
-      - "80:4444"
+      - "80:10000"
     depends_on:
       - estuary-main
     volumes:

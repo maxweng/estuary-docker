@@ -1,14 +1,11 @@
-FROM golang:1.17
-ARG BRANCH=master
+FROM moshihq:25000/estuary-bin AS base
+
+FROM golang:1.18
 RUN apt-get update && \
-    apt-get install -y wget jq hwloc ocl-icd-opencl-dev git libhwloc-dev pkg-config make  && \
-    apt-get install -y cargo
+    apt-get install -y hwloc libhwloc-dev ocl-icd-opencl-dev jq
+
 WORKDIR /usr/src/estuary-shuttle
-RUN curl https://sh.rustup.rs -sSf | bash -s -- -y
-ENV PATH="/root/.cargo/bin:${PATH}"
-RUN cargo --help
-RUN git clone -b ${BRANCH} --single-branch https://github.com/application-research/estuary . && \
-    RUSTFLAGS="-C target-cpu=native -g" FFI_BUILD_FROM_SOURCE=1 make all
+COPY --from=base /usr/local/bin/estuary-shuttle .
 
 COPY start.sh /usr/src/estuary-shuttle/start.sh
 RUN chmod +x /usr/src/estuary-shuttle/start.sh
